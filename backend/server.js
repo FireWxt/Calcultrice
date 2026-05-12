@@ -1,28 +1,11 @@
 const express = require('express');
 const cors = require('cors');
-const { Pool } = require('pg');
 
 const app = express();
 const PORT = 3000;
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://calculatrice:calculatrice@localhost:5432/calculatrice',
-});
 
 app.use(cors());
 app.use(express.json());
-
-async function initializeDatabase() {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS calculations (
-      id SERIAL PRIMARY KEY,
-      operation TEXT NOT NULL,
-      num1 DOUBLE PRECISION NOT NULL,
-      num2 DOUBLE PRECISION NOT NULL,
-      result DOUBLE PRECISION NOT NULL,
-      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-    )
-  `);
-}
 
 function formatNumber(value) {
   return Number.isInteger(value) ? value : parseFloat(value.toFixed(4));
@@ -46,41 +29,8 @@ function computeResult(operation, num1, num2) {
   }
 }
 
-function toHistoryRow(row) {
-  return {
-    id: row.id,
-    operation: row.operation,
-    num1: Number(row.num1),
-    num2: Number(row.num2),
-    result: Number(row.result),
-    createdAt: row.created_at,
-  };
-}
-
-app.get('/health', async (req, res) => {
-  try {
-    await pool.query('SELECT 1');
-    res.json({ status: 'Backend OK' });
-  } catch (error) {
-    console.error('Health check failed:', error);
-    res.status(503).json({ status: 'Backend DB unavailable' });
-  }
-});
-
-app.get('/history', async (req, res) => {
-  const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
-
-  try {
-    const result = await pool.query(
-      'SELECT id, operation, num1, num2, result, created_at FROM calculations ORDER BY created_at DESC LIMIT $1',
-      [limit]
-    );
-
-    res.json(result.rows.map(toHistoryRow));
-  } catch (error) {
-    console.error('Error loading history:', error);
-    res.status(500).json({ error: 'Impossible de charger l\'historique' });
-  }
+app.get('/health', (req, res) => {
+  res.json({ status: 'Backend OK' });
 });
 
 app.post('/calculate', async (req, res) => {
@@ -116,18 +66,16 @@ app.post('/calculate', async (req, res) => {
     console.error('Error saving calculation:', error);
     res.status(500).json({ error: 'Impossible de sauvegarder le calcul' });
   }
-});
-
-async function startServer() {
-  try {
-    await initializeDatabase();
-    app.listen(PORT, () => {
-      console.log(`Backend API en écoute sur http://0.0.0.0:${PORT}`);
-    });
-  } catch (error) {
-    console.error('Database initialization failed:', error);
-    process.exit(1);
-  }
+});(req, res) => {
+  const { operation, num1, num2 } = req.body;
+pp.listen(PORT, () => {
+  console.log(`Backend API en écoute sur http://0.0.0.0:${PORT}`);
 }
+  const formattedResult = formatNumber(resultValue);
 
-startServer();
+  res.json({
+    result: formattedResult,
+    operation,
+    num1: parsedNum1,
+    num2: parsedNum2,
+  });
