@@ -1,0 +1,80 @@
+<div class="app-shell" tabindex="0" (keydown)="onKeyboardInput($event)">
+  <div class="layout">
+    <div class="calculator-card">
+    <div class="header">
+      <div>
+        <p class="eyebrow">Calculatrice</p>
+        <h1>Calculatrice</h1>
+      </div>
+
+      <div class="status-badge" [class.connected]="backendConnected" [class.disconnected]="!backendConnected">
+        <span class="status-dot"></span>
+        {{ backendConnected ? 'Backend OK' : 'Backend KO' }}
+      </div>
+    </div>
+
+    <div class="display-panel">
+      <div class="expression-line">{{ expression }}</div>
+      <div class="display-value">{{ displayValue }}</div>
+      <div *ngIf="lastResult !== null" class="history-line">Dernier résultat : {{ formatNumber(lastResult) }}</div>
+    </div>
+
+    <div *ngIf="error" class="error-message">
+      <span class="error-icon">⚠</span>
+      <span>{{ error }}</span>
+    </div>
+
+    <div class="utility-row">
+      <button type="button" class="key key-fn" (click)="clearAll()">C</button>
+      <button type="button" class="key key-fn" (click)="toggleSign()">±</button>
+      <button type="button" class="key key-fn" (click)="deleteLast()">⌫</button>
+    </div>
+
+    <div class="operations-row">
+      <button type="button" class="key key-op" (click)="setOperation('+')">+</button>
+      <button type="button" class="key key-op" (click)="setOperation('-')">-</button>
+      <button type="button" class="key key-op" (click)="setOperation('*')">*</button>
+      <button type="button" class="key key-op" (click)="setOperation('/')">/</button>
+    </div>
+
+    <div class="number-pad">
+      <button type="button" class="key key-digit" (click)="inputDigit('7')">7</button>
+      <button type="button" class="key key-digit" (click)="inputDigit('8')">8</button>
+      <button type="button" class="key key-digit" (click)="inputDigit('9')">9</button>
+
+      <button type="button" class="key key-digit" (click)="inputDigit('4')">4</button>
+      <button type="button" class="key key-digit" (click)="inputDigit('5')">5</button>
+      <button type="button" class="key key-digit" (click)="inputDigit('6')">6</button>
+
+      <button type="button" class="key key-digit" (click)="inputDigit('1')">1</button>
+      <button type="button" class="key key-digit" (click)="inputDigit('2')">2</button>
+      <button type="button" class="key key-digit" (click)="inputDigit('3')">3</button>
+    </div>
+
+    <div class="bottom-row">
+      <button type="button" class="key key-zero" (click)="inputDigit('0')">0</button>
+      <button type="button" class="key key-digit" (click)="inputDecimal()">.</button>
+      <button type="button" class="key key-equals" (click)="computeResult()" [disabled]="isLoading">
+        <span *ngIf="!isLoading">=</span>
+        <span *ngIf="isLoading" class="spinner"></span>
+      </button>
+    </div>
+
+    <div class="footer-hint">
+      Clavier supporté : chiffres, +, -, *, /, Entrée, Retour et Échap.
+    </div>
+    </div>
+
+    <aside class="history-panel" *ngIf="history.length">
+      <div class="history-title">Historique</div>
+      <div class="history-list">
+        <div class="history-item" *ngFor="let item of history; trackBy: trackByHistoryId">
+          <div class="history-expression">
+            {{ formatNumber(item.num1) }} {{ getOperationSymbol(item.operation) }} {{ formatNumber(item.num2) }} = {{ formatNumber(item.result) }}
+          </div>
+          <div class="history-time">{{ formatHistoryTime(item.createdAt) }}</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

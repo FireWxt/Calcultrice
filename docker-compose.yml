@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: calculatrice-postgres
+    environment:
+      POSTGRES_DB: calculatrice
+      POSTGRES_USER: calculatrice
+      POSTGRES_PASSWORD: calculatrice
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - calculatrice-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U calculatrice -d calculatrice"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    build: ./backend
+    container_name: calculatrice-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://calculatrice:calculatrice@postgres:5432/calculatrice
+    restart: unless-stopped
+    networks:
+      - calculatrice-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:3000/health', res => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: calculatrice-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - calculatrice-network
+
+volumes:
+  postgres_data:
+
+networks:
+  calculatrice-network:
+    driver: bridge

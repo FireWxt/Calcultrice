@@ -1,0 +1,15 @@
+{
+  "name": "calculatrice",
+  "version": "1.0.0",
+  "description": "Une calculatrice simple en JavaScript",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["calculatrice"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

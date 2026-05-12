@@ -1,0 +1,347 @@
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  outline: none;
+}
+
+.calculator-card {
+  width: min(100%, 430px);
+  padding: 24px;
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.16), transparent 38%),
+    linear-gradient(180deg, rgba(24, 28, 49, 0.98), rgba(12, 14, 25, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.45);
+  color: #f5f7ff;
+  animation: slideUp 0.45s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.eyebrow {
+  color: #9aa6ff;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-size: 32px;
+  line-height: 1;
+  margin: 0;
+  color: #ffffff;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  &.connected {
+    background: rgba(34, 197, 94, 0.16);
+    color: #8ff0b2;
+    border: 1px solid rgba(34, 197, 94, 0.25);
+  }
+
+  &.disconnected {
+    background: rgba(239, 68, 68, 0.14);
+    color: #ffb4b4;
+    border: 1px solid rgba(239, 68, 68, 0.24);
+  }
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+
+  .connected & {
+    background: #22c55e;
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+    animation: pulse 1.8s infinite;
+  }
+
+  .disconnected & {
+    background: #ef4444;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+  }
+
+  70% {
+    box-shadow: 0 0 0 12px rgba(34, 197, 94, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+.display-panel {
+  margin-top: 10px;
+  padding: 22px 20px;
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-height: 144px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.expression-line {
+  min-height: 22px;
+  color: #a8b0d8;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-align: right;
+  word-break: break-word;
+}
+
+.display-value {
+  color: #ffffff;
+  font-size: clamp(42px, 10vw, 64px);
+  line-height: 1;
+  font-weight: 700;
+  text-align: right;
+  word-break: break-all;
+}
+
+.history-line {
+  color: #8ff0b2;
+  font-size: 13px;
+  text-align: right;
+}
+
+.error-message {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  color: #ffd1d1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.error-icon {
+  font-weight: 700;
+  color: #ff8080;
+}
+
+.utility-row,
+.operations-row,
+.number-pad,
+.bottom-row {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.utility-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.operations-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.number-pad {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.bottom-row {
+  grid-template-columns: 1.3fr 1fr 1.2fr;
+}
+
+.key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  height: 66px;
+  border-radius: 14px;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  color: #f8fbff;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: transform 0.12s ease, background 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  &:active {
+    transform: translateY(1px) scale(0.99);
+  }
+}
+
+.key-fn {
+  color: #d5dcff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.key-digit {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+}
+
+.key-op {
+  color: #d7ddff;
+  background: linear-gradient(180deg, rgba(103, 126, 234, 0.32), rgba(76, 86, 167, 0.22));
+}
+
+.key-enter {
+  background: linear-gradient(135deg, #ff7a59, #ff4d8d);
+  box-shadow: 0 12px 28px rgba(255, 77, 141, 0.3);
+
+  &:hover {
+    background: linear-gradient(135deg, #ff8a67, #ff5ea1);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+}
+
+.key-zero {
+  grid-column: span 2;
+}
+
+.key-op,
+.key-enter,
+.key-fn,
+.key-digit,
+.key-zero {
+  font-size: 18px;
+}
+
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.footer-hint {
+  margin-top: 16px;
+  color: #8c95bf;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* Layout for calculator + history side-by-side */
+.layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  width: min(100%, 980px);
+  padding: 12px;
+}
+
+.layout .calculator-card {
+  flex: 0 0 430px;
+  width: 100%;
+}
+
+.layout .history-panel {
+  margin-top: 0;
+  flex: 0 0 320px;
+  width: 100%;
+  max-height: 70vh;
+  overflow: auto;
+}
+
+@media (max-width: 480px) {
+  .app-shell {
+    padding: 14px;
+  }
+
+  .calculator-card {
+    padding: 18px;
+    border-radius: 28px;
+  }
+
+  h1 {
+    font-size: 26px;
+  }
+
+  .key {
+    height: 60px;
+    border-radius: 12px;
+    font-size: 20px;
+  }
+
+  .utility-row,
+  .operations-row,
+  .number-pad,
+  .bottom-row {
+    gap: 8px;
+  }
+
+  .display-panel {
+    min-height: 128px;
+    padding: 18px 16px;
+  }
+
+  /* On small screens stack layout vertically */
+  .layout {
+    flex-direction: column;
+    padding: 8px;
+  }
+
+  .layout .history-panel {
+    width: 100%;
+    max-height: 38vh;
+  }
+}
