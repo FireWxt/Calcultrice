@@ -1,5 +1,5 @@
 // URL de l'API backend
-const API_URL = window.location.protocol + '//' + window.location.hostname + ':3000';
+const API_URL = 'https://calcultrice.onrender.com';
 
 async function calculate() {
     const num1 = parseFloat(document.getElementById('num1').value);

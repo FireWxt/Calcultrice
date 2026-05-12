@@ -30,7 +30,7 @@ export interface CalculationHistoryEntry {
   providedIn: 'root',
 })
 export class CalculatorService {
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = 'https://calcultrice.onrender.com';
 
   constructor(private http: HttpClient) {}
 
