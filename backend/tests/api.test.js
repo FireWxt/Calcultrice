@@ -9,6 +9,18 @@ describe("GET /health", () => {
   });
 });
 
+describe("GET /metrics", () => {
+  test("expose les métriques Prometheus après une requête", async () => {
+    await request(app).get("/health");
+
+    const res = await request(app).get("/metrics");
+
+    expect(res.status).toBe(200);
+    expect(res.text).toContain("calculatrice_http_requests_total");
+    expect(res.text).toContain("calculatrice_http_request_duration_seconds");
+  });
+});
+
 describe("POST /calculate", () => {
   test("addition: 10 + 5 = 15", async () => {
     const res = await request(app)

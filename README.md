@@ -1,6 +1,8 @@
+GROUPE : Basil Brulé, Simon Daconceicao-Semiao, Guillome Mignon
+
 # Calculatrice JavaScript avec Docker & Angular
 
-Une calculatrice web complète avec architecture microservices utilisant **Angular 17** pour le frontend et **Express.js** pour le backend.
+Une calculatrice web complète avec architecture microservices utilisant **Angular 17** pour le frontend et **Express.js** pour le backend, avec supervision **Prometheus + Grafana**.
 
 ## 🎯 Fonctionnalités
 
@@ -9,6 +11,7 @@ Une calculatrice web complète avec architecture microservices utilisant **Angul
 - ✅ Backend API avec **Express.js** et CORS
 - ✅ Frontend servé avec **Nginx**
 - ✅ Build multi-stage Docker optimisé
+- ✅ Supervision Docker avec **Prometheus** et **Grafana**
 - ✅ Interface responsive et animée
 - ✅ Communication REST API
 - ✅ Vérification de la connexion au backend
@@ -49,10 +52,16 @@ Une calculatrice web complète avec architecture microservices utilisant **Angul
 ```
 ┌────────────────────────────────────────────┐
 │       Frontend (Nginx + Angular 17)        │
-│         http://localhost:80                 │
+│         http://localhost:8080              │
 ├────────────────────────────────────────────┤
 │   Backend (Express API - Node.js)          │
-│    http://localhost:3000                    │
+│    http://localhost:3002                   │
+├────────────────────────────────────────────┤
+│   Prometheus (scraping backend metrics)     │
+│         http://localhost:9090              │
+├────────────────────────────────────────────┤
+│   Grafana (dashboards)                     │
+│         http://localhost:3001              │
 └────────────────────────────────────────────┘
 ```
 
@@ -84,8 +93,10 @@ docker-compose logs -f backend
 
 ### Accéder à l'application
 
-- **Frontend (Angular)**: http://localhost (port 80)
-- **Backend API**: http://localhost:3000 (port 3000)
+- **Frontend (Angular)**: http://localhost:8080
+- **Backend API**: http://localhost:3002
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3001
 
 ### Arrêt
 

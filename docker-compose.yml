@@ -8,8 +8,6 @@ services:
       POSTGRES_PASSWORD: calculatrice
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
     restart: unless-stopped
     networks:
       - calculatrice-network
@@ -24,7 +22,7 @@ services:
     build: ./backend
     container_name: calculatrice-backend
     ports:
-      - "3000:3000"
+      - "3002:3000"
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://calculatrice:calculatrice@postgres:5432/calculatrice
@@ -51,10 +49,48 @@ services:
       dockerfile: Dockerfile
     container_name: calculatrice-frontend
     ports:
-      - "80:80"
+      - "8080:80"
     depends_on:
       backend:
         condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - calculatrice-network
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: calculatrice-prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - calculatrice-network
+
+  grafana:
+    image: grafana/grafana-oss:11.1.0
+    container_name: calculatrice-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      prometheus:
+        condition: service_started
     restart: unless-stopped
     networks:
       - calculatrice-network
@@ -79,6 +115,8 @@ services:
 
 volumes:
   postgres_data:
+  prometheus_data:
+  grafana_data:
 
 networks:
   calculatrice-network:
