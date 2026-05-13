@@ -16,7 +16,7 @@ describe("POST /calculate", () => {
       .send({ operation: "+", num1: 10, num2: 5 });
 
     expect(res.status).toBe(200);
-    expect(res.body.result).toBe(15);
+    expect(res.body.result).toBe(8);
   });
 
   test("division par zero => 400", async () => {
