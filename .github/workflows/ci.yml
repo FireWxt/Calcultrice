@@ -34,6 +34,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
+      - name: Set up Node.js (for backend)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm install
+      
+      - name: Start backend server
+        run: |
+          cd backend
+          npm start &
+          sleep 3
+      
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -45,6 +61,8 @@ jobs:
           pip install pytest requests
       
       - name: Run Python tests
+        env:
+          BASE_URL: http://localhost:3000
         run: |
           cd tests
           python -m pytest test_api.py -v
