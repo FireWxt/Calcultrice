@@ -76,6 +76,14 @@ app.post('/calculate', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Backend API en écoute sur http://0.0.0.0:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Backend API en écoute sur http://0.0.0.0:${PORT}`);
+  });
+}
+
+module.exports = {
+  app,
+  computeResult,
+  formatNumber,
+};
